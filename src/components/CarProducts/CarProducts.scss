@@ -1,0 +1,94 @@
+.car-button {
+  svg {
+    width: 35px;
+    fill: #fff;
+  }
+}
+
+.car-products {
+  overflow-y: hidden;
+  position: absolute;
+  background-color: #343a40;
+  top: 0;
+  right: 0;
+  text-align: left;
+  white-space: nowrap;
+  transition: 1s;
+  z-index: 9;
+  .car-products-header {
+    background-color: #343a40;
+    overflow: hidden;
+    position: fixed;
+    display: block;
+    align-items: center;
+    justify-content: left;
+    padding: 15px;
+    height: 70px;
+    width: 350px;
+    border-bottom: 1px solid #535353;
+    .button-close {
+      margin-right: 10px;
+      width: 100px;
+    }
+    div {
+      &:first-of-type {
+        display: flex;
+      }
+    }
+  }
+
+  .car-product-container {
+    overflow-y: scroll;
+    padding-top: 70px;
+    padding-bottom: 80px;
+    height: 100vh;
+    margin: 10px;
+    color: rgb(206, 206, 206);
+    font-size: small;
+  }
+
+  .car-product-item {
+    padding: 10px;
+    border-bottom: 1px solid #535353;
+    img {
+      width: 50px;
+    }
+    .car-product-info {
+      display: grid;
+    }
+    .buttons-quantity {
+      display: flex;
+      align-items: center;
+      align-content: center;
+      justify-content: center;
+    }
+    .button-quantity {
+      width: 40px;
+      height: 40px;
+    }
+    .product-quantity {
+      margin-bottom: 0;
+      font-size: 20px;
+      padding: 0px 10px 0px 10px;
+      border: solid 1px #fff;
+      border-radius: 3px;
+      margin: 0px 10px 0px 10px
+    }
+  }
+
+  .car-products-footer {
+    background-color: #343a40;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 70px;
+    position: fixed;
+    bottom: 0;
+    width: 350px;
+    border-top: 1px solid #535353;
+    .button-empty {
+      margin-left: 10px;
+      width: 100px;
+    }
+  }
+}
