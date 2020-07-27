@@ -1,70 +1,33 @@
-import React, { useEffect, useState } from "react";
+import { SHOPPING_CAR_STORAGE_KEY } from "./utils/constants";
+import React, { useEffect, useContext } from "react";
+import { store, actions } from "./store";
 import hookSearch from "./hooks/hookSearch";
 import Header from "./components/Header/index";
 import ProductList from "./components/ProductList/index";
-import { ToastContainer, toast } from "react-toastify";
-import {
-  SHOPPING_CAR_STORAGE_KEY,
-  urlPistachioV1ShoppingCar,
-} from "./utils/constants";
-import axios from "axios";
-import axiosClient from "./utils/axiosClient";
-import carTool from "./utils/carTool";
+import { ToastContainer } from "react-toastify";
 
-function App() {
-  const [shoppingCar, setShoppingCar] = useState(null);
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [filterName, setFilterName] = useState(null);
-  const [selectedCats, setSelectedCats] = useState([]);
-  const [message, setMessage] = useState(null);
+export default function App() {
+  const { state, dispatch } = useContext(store);
+  const { shoppingCar } = state;
 
-  const productList = hookSearch(page, perPage, filterName, selectedCats);
+  const productList = hookSearch();
 
   useEffect(() => {
     loadCar();
   });
 
   const loadCar = () => {
-    if (shoppingCar) {
+    if (shoppingCar.id) {
+      saveCarChanges(shoppingCar);
       return;
     }
     const localCar = getCarFromStorage(SHOPPING_CAR_STORAGE_KEY);
     if (localCar) {
-      setShoppingCar(localCar);
-      return;
-    }
-    setShoppingCar(null);
-  };
-
-  const addProductToCar = async (detail) => {
-    if (!shoppingCar) {
-      const created = await carTool.createShoppingCar(detail, setShoppingCar, saveCarLocaly, toast);
-      if (created) {
-        toast.success("Product was added.");
-      }
-      return;
-    }
-    const itemExists = carTool.itemExists(detail.id, shoppingCar.carItems);
-    if (itemExists) {
-      toast.info("Item already exist");
-      return;
-    }
-    const added = await carTool.addItemToShoppingCar(detail, shoppingCar, setShoppingCar, saveCarLocaly, toast);
-    if (added) {
-      toast.success("Product was added.");
+      dispatch({ type: actions.SET_SHOPPING_CAR, value: localCar });
     }
   };
 
-  const emptyCar = async () => {
-    await carTool.emptyShoppingCar(shoppingCar, setShoppingCar, saveCarLocaly, toast);
-  };
- 
-  const removeItem = async (detail) => {
-    await carTool.removeItemFromShoppingCar(detail, shoppingCar, setShoppingCar, saveCarLocaly, toast, carTool.itemExists(detail.productDetail.id, shoppingCar.carItems));
-  };
-
-  const saveCarLocaly = (car) => {
+  const saveCarChanges = (car) => {
     localStorage.setItem(SHOPPING_CAR_STORAGE_KEY, JSON.stringify(car));
   };
 
@@ -73,26 +36,15 @@ function App() {
     if (localCar) {
       return JSON.parse(localCar);
     }
-    return null;
-  };
-
-  const proccessAxiosError = (axiosError) => {
-    const error = axiosError.response;
-    return error && error.data ? error.data.error : "Something went wrong!! ;)";
+    return {};
   };
 
   return (
     <div>
-      <Header shoppingCar={shoppingCar} emptyShoppingCar={emptyCar} removeItem={removeItem} />
-      <ProductList
-        data={productList}
-        addProductToCar={addProductToCar}
-        setPage={setPage}
-        setFilterName={setFilterName}
-        setSelectedCats={setSelectedCats}
-      />
+      <Header />
+      <ProductList data={productList} saveCarChanges={saveCarChanges} />
       <ToastContainer
-        position="bottom-left"
+        position="top-left"
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
@@ -105,5 +57,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

@@ -1,11 +1,11 @@
+import "./Header.scss";
 import React from "react";
 import { ReactComponent as Logo } from "../../assets/svg/pistacho.svg";
 import { Container, Navbar, Nav } from "react-bootstrap";
 import CarProducts from "../CarProducts/index";
-import "./Header.scss";
 
-export default function MainMenu(props) {  
-  const { shoppingCar, emptyShoppingCar, removeItem } = props;
+
+export default function MainMenu() {
 
   return(
     <Navbar bg="dark" variant="dark" className="main-header" >
@@ -14,7 +14,7 @@ export default function MainMenu(props) {
       </Container>
       <Container>
         <MenuNav />
-        <CarProducts shoppingCar={shoppingCar} emptyShoppingCar={emptyShoppingCar} removeItem={removeItem} />
+        <CarProducts />
       </Container>
     </Navbar>
   );

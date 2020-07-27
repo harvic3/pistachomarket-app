@@ -1,24 +1,23 @@
-import React, { useState, useEffect } from "react";
+import "./CarProducts.scss";
+import React, { useState, useContext } from "react";
+import { store, actions } from "../../store";
 import { Button } from "react-bootstrap";
 import { ReactComponent as CarEmpty } from "../../assets/svg/shoppingCar.svg";
 import { ReactComponent as CarNotEmpty } from "../../assets/svg/carNotEmpty.svg";
-import "./CarProducts.scss";
+import CarProductsContainer from "./CarProductsContainer/index";
+import { emptyCarService } from "../../services/carService";
+import { cleanShoppingCar } from "../../utils/shoppingCarTool";
+import { toast } from "react-toastify";
 
-export default function CarProduct(props) {
-  const [carItems, setCarItems] = useState([]);
+export default function CarProduct() {
   const [openCloseCar, setOpenCloseCar] = useState(false);
-  const [carHasItems, setCarHasItems] = useState(false);
-  const { shoppingCar, emptyShoppingCar, removeItem } = props;
+  const { state } = useContext(store);
+  const { carHasItems } = state;
   const carWidth = openCloseCar ? 350 : 0;
-
-  useEffect(() => {
-    setCarHasItems(shoppingCar?.carItems?.length > 0 ? true : false);
-    setCarItems(shoppingCar?.carItems ? shoppingCar.carItems : []);
-  }, [shoppingCar]);
 
   const toggleCar = () => {
     setOpenCloseCar(!openCloseCar);
-    document.body.style.overflow = !openCloseCar ? "hidden" : "scroll";
+    document.body.classList.toggle("body-no-scroll", !openCloseCar);
   };
 
   return (
@@ -32,86 +31,12 @@ export default function CarProduct(props) {
       </Button>
       <div className="car-products" style={{ width: carWidth }}>
         <CarProductsHeader toggleCar={toggleCar} />
-        <CarProductsContainer carItems={carItems} removeItem={removeItem} />
-        <CarProductsFooter emptyShoppingCar={emptyShoppingCar} total={0} />
+        <CarProductsContainer />
+        <CarProductsFooter />
       </div>
     </div>
   );
 }
-
-function CarProductsContainer(props) {
-  const [items, setCarItems] = useState([]);
-  const { carItems = [], removeItem } = props;
-
-  useEffect(() => {
-    setCarItems(carItems);
-  }, [carItems]);
-
-  return (
-    <div className="car-product-container">
-      {items.map((carItem, index) => {
-        return (
-          <CarProductItem
-            key={index}
-            carItem={carItem}
-            removeItem={removeItem}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
-function CarProductItem(props) {
-  const { removeItem, carItem } = props;
-  const { name, firtsUrlImage, productDetail, quantity } = carItem;
-
-  return (
-    <div className="car-product-item">
-      <img src={firtsUrlImage} alt={name} />
-      <div className="car-product-info">
-        <div>
-          <h5>{name.substring(0, 23)}</h5>
-          <p>$ {productDetail.price} USD</p>
-        </div>
-        <div className="buttons-quantity">
-          <Button
-            className="button-remove"
-            onClick={() => removeItem(carItem)}
-            variant="outline-primary"
-          >
-            Remove
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// function CarProductItem(props) {
-//   const { name, firtsUrlImage, productDetail, quantity } = props.carItem;
-
-//   return (
-//     <div className="car-product-item">
-//       <img src={firtsUrlImage} alt={name} />
-//       <div className="car-product-info">
-//         <div>
-//           <h5>{name.substring(0, 23)}</h5>
-//           <p>$ {productDetail.price} USD</p>
-//         </div>
-//         <div className="buttons-quantity">
-//           <Button className="button-quantity" variant="outline-primary">
-//             -
-//           </Button>
-//           <p className="product-quantity" >{quantity}</p>
-//           <Button className="button-quantity" variant="outline-primary">
-//             +
-//           </Button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
 
 function CarProductsHeader(props) {
   const { toggleCar } = props;
@@ -131,19 +56,36 @@ function CarProductsHeader(props) {
   );
 }
 
-function CarProductsFooter(props) {
-  const { emptyShoppingCar } = props;
+function CarProductsFooter() {
+  const { state, dispatch } = useContext(store);
+  const { shoppingCar } = state;
+  const { orderPriceDetail } = shoppingCar; 
+
+  const emptyCar = async () => {
+    const result = await emptyCarService(shoppingCar);
+    if (!result.success) {
+      toast.error(`Error empty car: ${result.message}`);
+      return;
+    }
+    const cleanCar = cleanShoppingCar(shoppingCar);
+    dispatch({ type: actions.SET_SHOPPING_CAR, value: cleanCar });
+    toast.success("Shopping car is now empty.");
+  };
 
   return (
     <div className="car-products-footer">
       <div></div>
       <Button
         className="button-empty"
-        onClick={() => emptyShoppingCar()}
+        onClick={() => emptyCar()}
         variant="outline-warning"
       >
         Empty
       </Button>
+      <div className="total-details" >
+        <p>{orderPriceDetail?.items} Units</p>
+        <p>Total: $ {orderPriceDetail?.total} USD</p>
+      </div>
     </div>
   );
 }

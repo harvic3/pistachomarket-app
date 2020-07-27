@@ -34,7 +34,7 @@ export default function Result() {
   return {
     setError,
     setSuccess,
-    resolve,
     setMessage,
+    resolve,
   };
 }
