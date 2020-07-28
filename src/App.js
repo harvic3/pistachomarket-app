@@ -9,17 +9,17 @@ import { ToastContainer } from "react-toastify";
 export default function App() {
   const { state, dispatch } = useContext(store);
   const { shoppingCar } = state;
+  const { id } = shoppingCar;
 
   const productList = hookSearch();
 
   useEffect(() => {
     loadCar();
-  });
+  },[id]);
 
   const loadCar = () => {
     if (shoppingCar.id) {
-      saveCarChanges(shoppingCar);
-      return;
+      return
     }
     const localCar = getCarFromStorage(SHOPPING_CAR_STORAGE_KEY);
     if (localCar) {

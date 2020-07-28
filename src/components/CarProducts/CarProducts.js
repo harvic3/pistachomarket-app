@@ -83,8 +83,8 @@ function CarProductsFooter() {
         Empty
       </Button>
       <div className="total-details" >
-        <p>{orderPriceDetail?.items} Units</p>
-        <p>Total: $ {orderPriceDetail?.total} USD</p>
+        <p>{orderPriceDetail?.items || 0} Units</p>
+        <p>Total: $ {orderPriceDetail?.total || 0} USD</p>
       </div>
     </div>
   );
