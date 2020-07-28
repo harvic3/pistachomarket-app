@@ -15,7 +15,6 @@ export default function ProductList(props) {
   const { result, loading, error } = data || {};
   const products = result ? result.result : [];
 
-
   const addProductToCar = async (detail) => {
     if (!shoppingCar.id) {
       const result = await createCarService(detail);

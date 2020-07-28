@@ -7,6 +7,7 @@ const initialState = {
   perPage: 10, 
   selectedCats: [], 
   filterName: null,
+  numberItems: 0,
 };
 const store = createContext(initialState);
 const { Provider } = store;
@@ -23,8 +24,9 @@ const StateProvider = ({ children }) => {
   const [state, dispatch] = useReducer((state, action) => {
     switch (action.type) {
       case actions.SET_SHOPPING_CAR:
-        const carHasItems = action.value.carItems?.length > 0 ? true : false;
-        return {...state, shoppingCar: action.value, carHasItems };
+        const itemsCount = action.value.carItems?.length || 0;
+        const carHasItems = itemsCount > 0 ? true : false;
+        return {...state, shoppingCar: action.value, carHasItems, numberItems: itemsCount };
       default:
         return {...state};
     }
