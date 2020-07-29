@@ -1,5 +1,5 @@
 // export const PISTACHO_URL = "http://localhost:5060";
-export const PISTACHO_URL = "http://pistachiomarket.ml";
+export const PISTACHO_URL = "http://www.pistachiomarket.ml";
 export const PISTACHO_API = `${PISTACHO_URL}/api`;
 export const urlPistachioV1Categories = `${PISTACHO_API}/v1/categories`;
 export const urlPistachioV1Products = `${PISTACHO_API}/v1/products`;
