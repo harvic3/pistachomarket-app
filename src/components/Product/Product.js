@@ -7,7 +7,7 @@ import "./Product.scss";
 
 export default function Product(props) {
   const [showDetail, setShowDetail] = useState(false);
-  const { product, showSummary, addProductToCar } = props;
+  const { product, addProductToCar } = props;
   const productDetail = product.details[0];
 
   const closeDetailModal = () => setShowDetail(false);
@@ -26,7 +26,7 @@ export default function Product(props) {
         />
         <Card.Body>
           <Card.Title>{product.name}</Card.Title>
-          <ProductDetail detail={productDetail} showSummary={showSummary} />
+          <ProductDetail detail={productDetail} />
           <Category category={product.category} />
           <Button
             variant="outline-primary"

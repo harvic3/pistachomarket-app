@@ -25,7 +25,7 @@ const StateProvider = ({ children }) => {
     switch (action.type) {
       case actions.SET_SHOPPING_CAR:
         const itemsCount = action.value.carItems?.length || 0;
-        const carHasItems = itemsCount > 0 ? true : false;
+        const carHasItems = itemsCount > 0;
         return {...state, shoppingCar: action.value, carHasItems, numberItems: itemsCount };
       default:
         return {...state};

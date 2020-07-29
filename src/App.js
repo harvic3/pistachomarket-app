@@ -17,9 +17,7 @@ export default function App() {
   },[numberItems]);
 
   const loadCar = () => {
-    console.log("load car 1;");
     if (shoppingCar.id) {
-    console.log("load car 2;");
       saveCarChanges(shoppingCar);
       return;
     }

@@ -12,7 +12,7 @@ export default function ProductList(props) {
   const { state, dispatch } = useContext(store);
   const { shoppingCar, page, perPage, filterName, selectedCats } = state;
   const { data, saveCarChanges} = props;
-  const { result, loading, error } = data || {};
+  const { result, loading } = data || {};
   const products = result ? result.result : [];
 
   const addProductToCar = async (detail) => {
@@ -53,7 +53,7 @@ export default function ProductList(props) {
         ) : (
           products.map((product, index) => {
             return (
-              <Product key={product.id} product={product} showSummary={true} addProductToCar={addProductToCar} />
+              <Product key={product.id} product={product} addProductToCar={addProductToCar} />
             );
           })
         )}
